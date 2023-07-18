@@ -6,7 +6,7 @@ import com.example.eventfinder.data.api.EventApiService
 import com.example.eventfinder.data.database.AppDatabase
 import com.example.eventfinder.data.database.dao.EventDao
 import com.example.eventfinder.data.repository.EventRepository
-import com.example.eventfinder.ui.viewmodels.EventViewModelFactory
+import com.example.eventfinder.util.Constants.BASE_URL
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,8 +19,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-    private const val BASE_URL = "https://guidebook.com/service/v2/"
-
     @Provides
     @Singleton
     fun provideEventApiService(): EventApiService {
@@ -50,10 +48,5 @@ object AppModule {
     @Singleton
     fun provideEventRepository(apiService: EventApiService, eventDao: EventDao): EventRepository {
         return EventRepository(apiService, eventDao)
-    }
-
-    @Provides
-    fun provideEventViewModelFactory(repository: EventRepository): EventViewModelFactory {
-        return EventViewModelFactory(repository)
     }
 }

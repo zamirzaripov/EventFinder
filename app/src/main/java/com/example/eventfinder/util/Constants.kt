@@ -1,4 +1,5 @@
 package com.example.eventfinder.util
 
-object Constans {
+object Constants {
+    const val BASE_URL = "https://guidebook.com/service/v2/"
 }

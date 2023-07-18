@@ -1,4 +1,4 @@
-package com.example.eventfinder.app
+package com.example.eventfinder
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp

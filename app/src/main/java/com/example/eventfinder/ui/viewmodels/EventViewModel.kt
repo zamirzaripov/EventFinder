@@ -1,12 +1,12 @@
 package com.example.eventfinder.ui.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.eventfinder.data.model.Event
 import com.example.eventfinder.data.repository.EventRepository
+import com.example.eventfinder.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -15,27 +15,31 @@ import javax.inject.Inject
 class EventViewModel @Inject constructor(
     private val repository: EventRepository
 ) : ViewModel() {
-    private val _events = MutableLiveData<List<Event>>()
-    val events: LiveData<List<Event>> get() = _events
+    private val _events = MutableLiveData<Resource<List<Event>>>()
+    val events: LiveData<Resource<List<Event>>> get() = _events
+
+    private val _cachedEvents = MutableLiveData<List<Event>>()
+    val cachedEvents: LiveData<List<Event>> get() = _cachedEvents
 
     init {
         viewModelScope.launch {
-            _events.value = repository.getCachedEvents()
-            fetchEvents()
+            _events.value = Resource.Loading
+
+            try {
+                val events = repository.getEvents()
+                _events.value = events
+
+                updateCachedEvents()
+            } catch (e: Exception) {
+                _events.value = Resource.Error("Ошибка загрузки данных")
+            }
         }
     }
 
-    private suspend fun fetchEvents() {
-        try {
-            val events = repository.getEvents()
+    private suspend fun updateCachedEvents() {
 
-            Log.d("AAAAAA", events.toString())
+        val cachedEvents = repository.getCachedEvents()
 
-            _events.postValue(events)
-        } catch (e: Exception) {
-            // Handle the error here and show an error message to the user
-        }
+        _cachedEvents.value = cachedEvents
     }
-
-
 }

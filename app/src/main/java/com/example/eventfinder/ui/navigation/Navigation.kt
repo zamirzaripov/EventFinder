@@ -17,10 +17,11 @@ fun Navigation(navController: NavHostController) {
 
             MainScreen(navController = navController, viewModel = viewModel)
         }
-        composable("webViewScreen/{url}") { backStackEntry ->
+        composable("webViewScreen/{url}/{title}") { backStackEntry ->
             val url = backStackEntry.arguments?.getString("url") ?: ""
+            val title = backStackEntry.arguments?.getString("title") ?: ""
 
-            WebViewScreen(navController = navController, url = url)
+            WebViewScreen(navController = navController, url = url, title = title)
         }
     }
 }
